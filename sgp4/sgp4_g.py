@@ -9,6 +9,156 @@ true = True
 twopi = 2.0 * pi
 
 
+class SatelliteArray:
+    """ convert the satrec Satellite object into an array for input into GPU functions """
+
+    length = 100
+
+    @property
+    def array(self):
+        """ get the array """
+        if self._array.shape[0] != self.length:
+            raise ValueError
+        return self._array.T
+
+    @array.setter
+    def array(self, value):
+        """ set the array """
+        if value.shape[0] != self.length:
+            raise ValueError
+        self._array = value
+
+    @property
+    def position(self):
+        """ get the position from the array """
+        return self.array[:, 94:97]
+
+    @property
+    def velocity(self):
+        """ get the velocity from the array """
+        return self.array[:, 97:100]
+
+    def __len__(self):
+        return self.length
+
+    def __init__(self, satrec=None):
+        self.array = np.zeros((self.length,), dtype=np.float64) if satrec is None else self.create_array(satrec)
+
+    @classmethod
+    def create_array(cls, satrec):
+        """
+            create the satellite array compatible with the GPU propagations
+
+            Args:
+                satrec (Satellite):     the satellite object containing data for the sgp4 propagator
+
+            Returns:
+                (np.ndarray):           the satellite object data converted to an array
+        """
+        satrec_array = np.zeros((cls.length,), dtype=np.float64)
+        satrec_array[0] = satrec.isimp
+        satrec_array[1] = 1 if satrec.method == 'd' else 0  # method
+        satrec_array[2] = satrec.aycof
+        satrec_array[3] = satrec.con41
+        satrec_array[4] = satrec.cc1
+        satrec_array[5] = satrec.cc4
+        satrec_array[6] = satrec.cc5
+        satrec_array[7] = satrec.d2
+        satrec_array[8] = satrec.d3
+        satrec_array[9] = satrec.d4
+        satrec_array[10] = satrec.delmo
+        satrec_array[11] = satrec.eta
+        satrec_array[12] = satrec.argpdot
+        satrec_array[13] = satrec.omgcof
+        satrec_array[14] = satrec.sinmao
+        satrec_array[15] = satrec.t
+        satrec_array[16] = satrec.t2cof
+        satrec_array[17] = satrec.t3cof
+        satrec_array[18] = satrec.t4cof
+        satrec_array[19] = satrec.t5cof
+        satrec_array[20] = satrec.x1mth2
+        satrec_array[21] = satrec.x7thm1
+        satrec_array[22] = satrec.mdot
+        satrec_array[23] = satrec.nodedot
+        satrec_array[24] = satrec.xlcof
+        satrec_array[25] = satrec.xmcof
+        satrec_array[26] = satrec.nodecf
+        satrec_array[27] = satrec.irez
+        satrec_array[28] = satrec.d2201
+        satrec_array[29] = satrec.d2211
+        satrec_array[30] = satrec.d3210
+        satrec_array[31] = satrec.d3222
+        satrec_array[32] = satrec.d4410
+        satrec_array[33] = satrec.d4422
+        satrec_array[34] = satrec.d5220
+        satrec_array[35] = satrec.d5232
+        satrec_array[36] = satrec.d5421
+        satrec_array[37] = satrec.d5433
+        satrec_array[38] = satrec.dedt
+        satrec_array[39] = satrec.del1
+        satrec_array[40] = satrec.del2
+        satrec_array[41] = satrec.del3
+        satrec_array[42] = satrec.didt
+        satrec_array[43] = satrec.dmdt
+        satrec_array[44] = satrec.dnodt
+        satrec_array[45] = satrec.domdt
+        satrec_array[46] = satrec.e3
+        satrec_array[47] = satrec.ee2
+        satrec_array[48] = satrec.peo
+        satrec_array[49] = satrec.pgho
+        satrec_array[50] = satrec.pho
+        satrec_array[51] = satrec.pinco
+        satrec_array[52] = satrec.plo
+        satrec_array[53] = satrec.se2
+        satrec_array[54] = satrec.se3
+        satrec_array[55] = satrec.sgh2
+        satrec_array[56] = satrec.sgh3
+        satrec_array[57] = satrec.sgh4
+        satrec_array[58] = satrec.sh2
+        satrec_array[59] = satrec.sh3
+        satrec_array[60] = satrec.si2
+        satrec_array[61] = satrec.si3
+        satrec_array[62] = satrec.sl2
+        satrec_array[63] = satrec.sl3
+        satrec_array[64] = satrec.sl4
+        satrec_array[65] = satrec.gsto
+        satrec_array[66] = satrec.xfact
+        satrec_array[67] = satrec.xgh2
+        satrec_array[68] = satrec.xgh3
+        satrec_array[69] = satrec.xgh4
+        satrec_array[70] = satrec.xh2
+        satrec_array[71] = satrec.xh3
+        satrec_array[72] = satrec.xi2
+        satrec_array[73] = satrec.xi3
+        satrec_array[74] = satrec.xl2
+        satrec_array[75] = satrec.xl3
+        satrec_array[76] = satrec.xl4
+        satrec_array[77] = satrec.xlamo
+        # satrec_array[78] = satrec.xlmth2  # xlmth2
+        satrec_array[79] = satrec.zmol
+        satrec_array[80] = satrec.zmos
+        satrec_array[81] = satrec.atime
+        satrec_array[82] = satrec.xli
+        satrec_array[83] = satrec.xni
+        satrec_array[84] = satrec.bstar
+        satrec_array[85] = satrec.ecco
+        satrec_array[86] = satrec.argpo
+        satrec_array[87] = satrec.inclo
+        satrec_array[88] = satrec.mo
+        satrec_array[89] = satrec.no
+        satrec_array[90] = satrec.nodeo
+        satrec_array[91] = 1 if satrec.afspc_mode else 0  # afspc_mode
+        satrec_array[92] = satrec.error
+        satrec_array[93] = 1 if satrec.init == 'y' else 0
+        return satrec_array
+
+    def __call__(self, satrec=None):
+        """ return the array """
+        if satrec is None:
+            return self.array
+        return self.create_array(satrec)
+
+
 @cuda.jit('void(float64[:], float64, float64[:])', device=True)
 def _dspace(satrec, tc, out):
      """
@@ -1695,7 +1845,7 @@ def sgp4_init(whichconst, afspc_mode, epoch, xbstar,  xecco, xargpo, xinclo,  xm
         Args:
             whichconst (np.ndarray):        an array of initial constants, each column corresponds to a particular
                                                 propagation case
-            afspc_mode (np.ndarray):        a 1D array of flags that if 1 is equivelent to True within the legacy
+            afspc_mode (np.ndarray):        a 1D array of flags that if 1 is equivalent to True within the legacy
                                                 algorithm else 0
             epoch (np.ndarray):             a 1D array of epochs where every element corresponds to a particular
                                                 propagation case
