@@ -5,6 +5,7 @@ from sgp4.propagation import sgp4
 
 minutes_per_day = 1440.
 
+
 class Satellite(object):
     """An earth-orbiting satellite as represented by the SGP4 model.
 
@@ -48,3 +49,12 @@ class Satellite(object):
         m = (j - self.jdsatepoch) * minutes_per_day
         r, v = sgp4(self, m)
         return r, v
+
+
+    # bstar
+    # inclo
+    # nodeo
+    # ecco
+    # argpo
+    # mo
+    # no

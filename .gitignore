@@ -4,3 +4,13 @@
 /MANIFEST
 /.coverage
 /htmlcov/
+
+\.cache/v/cache/
+
+*.iml
+
+\.idea/
+
+*.nbc
+
+*.nbi

@@ -7,15 +7,14 @@ description, long_description = sgp4.__doc__.split('\n', 1)
 satdoc = dedent(sgp4.model.Satellite.__doc__.split('\n', 1)[1])
 long_description = long_description.replace('entry.', 'entry.' + satdoc)
 
-setup(name = 'sgp4',
-      version = '1.4',
-      description = description,
-      long_description = long_description,
-      license = 'MIT',
-      author = 'Brandon Rhodes',
-      author_email = 'brandon@rhodesmill.org',
-      url = 'https://github.com/brandon-rhodes/python-sgp4',
-      classifiers = [
+setup(name='sgp4_g',
+      version='0.1',
+      description=description,
+      long_description=long_description,
+      license='MIT',
+      author='Brenton Smith',
+      url='https://github.com/brentonwhf/python-sgp4',
+      classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
@@ -28,5 +27,5 @@ setup(name = 'sgp4',
         'Programming Language :: Python :: 3.4',
         'Topic :: Scientific/Engineering :: Astronomy',
         ],
-      packages = ['sgp4'],
+      packages=['sgp4'],
       )

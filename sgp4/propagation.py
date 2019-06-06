@@ -17,8 +17,13 @@ code for the first time here in its Python form.
 |   On a very hot August day in 2012
 """
 
+
+from numba import cuda
+
+
 try:
      from numba import jit
+
 except ImportError:
      def jit(jit_this=None, **jit_options):
           if jit_this is not None:
@@ -1663,7 +1668,7 @@ def sgp4(satrec, tsince, whichconst=None):
 
      mrt = 0.0
      if whichconst is None:
-          whichconst = satrec.whichconst
+         whichconst = satrec.whichconst
 
      """
      /* ------------------ set mathematical constants --------------- */
