@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 from numba import cuda
+from copy import deepcopy
 
 from sgp4 import sgp4_g as sgp4
 from sgp4.earth_gravity import wgs72
@@ -378,3 +379,48 @@ def test_sgp4(client):
     expected = np.array(array)
     assert np.allclose(expected, client.satrec_array[:, 94:])
 
+
+def test_satellite_array(client):
+    """ test the conversion of the satrec object to an array """
+    sat_array = sgp4.SatelliteArray.create_array(client.Satrec())
+    assert np.allclose(sat_array, client.satrec_array)
+
+
+def test_array(client):
+    """ test the setting and getting of the array within SatelliteArray """
+    s0 = sgp4.SatelliteArray(client.Satrec())
+    assert np.allclose(s0.array, client.satrec_array)
+    # test the default value of the array
+    s1 = sgp4.SatelliteArray()
+    assert np.allclose(s1.array, np.zeros((s1.length, )))
+    # test the setting of the array
+    a2 = deepcopy(client.satrec_array.T)
+    expected2 = deepcopy(client.satrec_array)
+    s0.array = a2
+    assert np.allclose(s0.array, expected2)
+
+
+def test_position(client):
+    """ test the setting and getting of the position """
+    s0 = sgp4.SatelliteArray()
+    a0 = deepcopy(client.satrec_array.T)
+    # define the position components
+    expected0 = np.array([1, 2, 3])
+    a0[94, :] = expected0[0]
+    a0[95, :] = expected0[1]
+    a0[96, :] = expected0[2]
+    s0.array = a0
+    assert np.allclose(s0.position, expected0)
+
+
+def test_velocity(client):
+    """ test the setting and getting of the position """
+    s0 = sgp4.SatelliteArray()
+    a0 = deepcopy(client.satrec_array.T)
+    # define the position components
+    expected0 = np.array([1, 2, 3])
+    a0[97, :] = expected0[0]
+    a0[98, :] = expected0[1]
+    a0[99, :] = expected0[2]
+    s0.array = a0
+    assert np.allclose(s0.velocity, expected0)
